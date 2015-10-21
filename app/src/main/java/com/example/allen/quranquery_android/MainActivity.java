@@ -16,15 +16,36 @@ import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
 
-    private QuranData quranData = new QuranData();
-    private SuraObject suraObject;
-    private  AyaObject ayaObject = new AyaObject();
+    static private QuranData quranData = new QuranData();
+    static private SuraObject suraObject = null;
+    static private  AyaObject ayaObject = new AyaObject();
+    static boolean is_init = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (is_init) {
+            Intent intent = getIntent();
+            if (intent == null) {
+                return;
+            }
+
+            Bundle bundle = intent.getExtras();
+            if (bundle == null) {
+                return;
+            }
+            String res = bundle.getString(QueryActivity.KeyWord_Str);
+            if (res != null) {
+                searchCb(res);
+                return;
+            }
+
+            TextView textView = (TextView)findViewById(R.id.quran_text);
+            textView.setMovementMethod(new ScrollingMovementMethod());
+            return;
+        }
         InputStream stream = getResources().openRawResource(R.raw.quran);
 
         try {
@@ -32,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException| XmlPullParserException e1) {
             e1.printStackTrace();
         }
+
+        is_init = true;
     }
 
     private void searchCb(String res) {
@@ -53,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (aya.ayaContent.contains(res)) {
-                    builder.append(aya.ayaContent + "/n");
+                    builder.append(aya.ayaContent + "\n");
                 }
             }
         }
@@ -81,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 if (eventType == XmlPullParser.START_TAG) {
                     if (parser.getName().equalsIgnoreCase("qurantext")){
+                        if (ayaObject == null) {
+                            ayaObject = new AyaObject();
+                        }
                         ayaObject.ayaContent = parser.nextText();
 
                         res.append(ayaObject.ayaContent);
@@ -99,6 +125,10 @@ public class MainActivity extends AppCompatActivity {
                         suraObject.suraName = parser.getAttributeValue(null, "name");
                     }
                     else if (parser.getName().equalsIgnoreCase("aya")) {
+                        if (ayaObject == null) {
+                            ayaObject = new AyaObject();
+                        }
+
                         ayaObject.ayaID = parser.getAttributeValue(null, "id");
                         int ayaid = Integer.valueOf(ayaObject.ayaID);
                         if (suraObject.max_aya_num < ayaid) {
@@ -115,7 +145,8 @@ public class MainActivity extends AppCompatActivity {
                         suraObject = null;
                     }
                     else if (parser.getName().equalsIgnoreCase("aya")) {
-
+                        suraObject.suraMap.put(ayaObject.ayaID, ayaObject);
+                        ayaObject = null;
                     }
                 }
 
@@ -149,23 +180,11 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent();
                     intent.setClass(this, QueryActivity.class);
                     startActivity(intent);
+                    finish();
                 }
                 break;
         }
         return super.onTouchEvent(event);
     }
 
-    public void onResume() {
-        super.onResume();
-
-        Intent intent = getIntent();
-        if (intent == null) {
-            return;
-        }
-        String res = intent.getStringExtra(QueryActivity.KeyWord_Str);
-        if (res != null) {
-            searchCb(res);
-            return;
-        }
-    }
 }

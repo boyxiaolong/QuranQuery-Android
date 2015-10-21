@@ -19,8 +19,10 @@ public class QueryActivity extends AppCompatActivity {
         if (textView.getText().length() > 0) {
             Intent intent = new Intent();
             intent.setClass(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            intent.putExtra(QueryActivity.KeyWord_Str, textView.getText());
+
+            Bundle bundle = new Bundle();
+            bundle.putString(QueryActivity.KeyWord_Str, textView.getText().toString());
+            intent.putExtras(bundle);
             startActivity(intent);
         }
     }
