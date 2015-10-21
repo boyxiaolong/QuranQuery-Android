@@ -9,5 +9,6 @@ import java.util.Map;
 public class SuraObject {
     public String suraID;
     public String suraName;
+    public  int max_aya_num = 0;
     public Map<String, AyaObject> suraMap = new HashMap<String, AyaObject>();
 }
