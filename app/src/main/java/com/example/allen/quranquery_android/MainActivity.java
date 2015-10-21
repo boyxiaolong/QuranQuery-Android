@@ -25,16 +25,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = getIntent();
-        if (intent == null) {
-            return;
-        }
-        String res = intent.getStringExtra(QueryActivity.KeyWord_Str);
-        if (res != null) {
-            searchCb(res);
-            return;
-        }
-
         InputStream stream = getResources().openRawResource(R.raw.quran);
 
         try {
@@ -167,5 +157,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void onResume() {
         super.onResume();
+
+        Intent intent = getIntent();
+        if (intent == null) {
+            return;
+        }
+        String res = intent.getStringExtra(QueryActivity.KeyWord_Str);
+        if (res != null) {
+            searchCb(res);
+            return;
+        }
     }
 }
