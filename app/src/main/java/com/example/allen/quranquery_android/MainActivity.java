@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 searchCb(res);
                 return;
             }
-            
+
             return;
         }
         InputStream stream = getResources().openRawResource(R.raw.quran);
