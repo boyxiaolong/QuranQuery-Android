@@ -41,9 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 searchCb(res);
                 return;
             }
-
-            TextView textView = (TextView)findViewById(R.id.quran_text);
-            textView.setMovementMethod(new ScrollingMovementMethod());
+            
             return;
         }
         InputStream stream = getResources().openRawResource(R.raw.quran);
@@ -76,13 +74,14 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (aya.ayaContent.contains(res)) {
-                    builder.append(aya.ayaContent + "\n");
+                    builder.append("[" + suraid + ":" + ayaid + "]" + aya.ayaContent + "\n");
                 }
             }
         }
 
         TextView textView = (TextView)findViewById(R.id.quran_text);
         textView.setText(builder.toString());
+        textView.setMovementMethod(new ScrollingMovementMethod());
     }
     public boolean parseFile(InputStream stream) throws XmlPullParserException, IOException{
         if (stream == null) {
@@ -109,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         ayaObject.ayaContent = parser.nextText();
 
-                        res.append(ayaObject.ayaContent);
+                        res.append("[" + suraObject.suraID + ":" + ayaObject.ayaID + "]" + ayaObject.ayaContent);
                         res.append("\n");
                     }
                     else if (parser.getName().equalsIgnoreCase("sura")) {
