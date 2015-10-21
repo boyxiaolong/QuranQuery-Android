@@ -2,6 +2,7 @@ package com.example.allen.quranquery_android;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Xml;
 import android.widget.TextView;
 
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         TextView textView = (TextView)findViewById(R.id.quran_text);
+        textView.setMovementMethod(new ScrollingMovementMethod());
         StringBuilder res = new StringBuilder();
 
         try {
