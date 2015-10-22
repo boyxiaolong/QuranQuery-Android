@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -29,34 +30,33 @@ public class QueryActivity extends AppCompatActivity {
         , sura_vec);
 
         suraspinner.setAdapter(spinnerAdapter);
-//        suraspinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            protected Adapter initAdapter = null;
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                if (initAdapter != parent.getAdapter()) {
-//                    initAdapter = parent.getAdapter();
-//                    return;
-//                }
-//
-//                String selected = parent.getItemAtPosition(position).toString();
-//                if (selected != "全部") {
-//                    SuraObject so = MainActivity.quranData.quranMap.get(selected);
-//                    if (so != null) {
-//
-//                        Spinner aysspinner = (Spinner)findViewById(R.id.ayaspinner);
-//                        List<String> aya_vec = new ArrayList<String>();
-//                        aya_vec.add("全部");
-//                        for (int i = 1; i <= so.max_aya_num; ++i) {
-//                            aya_vec.add("" + i);
-//                        }
-//
-//                        ArrayAdapter<String> tmpAdapter = new ArrayAdapter<String>(QueryActivity.this, android.R.layout.simple_spinner_item
-//                                , aya_vec);
-//                        aysspinner.setAdapter(tmpAdapter);
-//                    }
-//                }
-//        }
-//    });
+        suraspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                String selected = parent.getItemAtPosition(position).toString();
+                if (selected != "全部") {
+                    SuraObject so = MainActivity.quranData.quranMap.get(selected);
+                    if (so != null) {
+
+                        Spinner aysspinner = (Spinner)findViewById(R.id.ayaspinner);
+                        List<String> aya_vec = new ArrayList<String>();
+                        aya_vec.add("全部");
+                        for (int i = 1; i <= so.max_aya_num; ++i) {
+                            aya_vec.add("" + i);
+                        }
+
+                        ArrayAdapter<String> tmpAdapter = new ArrayAdapter<String>(QueryActivity.this, android.R.layout.simple_spinner_item
+                                , aya_vec);
+                        aysspinner.setAdapter(tmpAdapter);
+                    }
+                }
+        }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+                
+            }
+    });
     }
     public void onQueryBtnClick(View view) {
         EditText textView = (EditText)findViewById(R.id.keywordtextView);
