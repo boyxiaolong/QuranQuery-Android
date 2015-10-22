@@ -63,6 +63,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void searchCb(String res) {
         StringBuilder builder = new StringBuilder();
+        serachKeyWords(res, builder);
+
+        TextView textView = (TextView)findViewById(R.id.quran_text);
+        textView.setText(builder.toString());
+        textView.setMovementMethod(new ScrollingMovementMethod());
+    }
+
+    static public void serachKeyWords(String res, StringBuilder builder) {
         builder.append("");
 
         for (int i = 1; i <= quranData.max_sura_num; ++i) {
@@ -84,11 +92,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-
-        TextView textView = (TextView)findViewById(R.id.quran_text);
-        textView.setText(builder.toString());
-        textView.setMovementMethod(new ScrollingMovementMethod());
     }
+
     public boolean parseFile(InputStream stream) throws XmlPullParserException, IOException{
         if (stream == null) {
             return false;

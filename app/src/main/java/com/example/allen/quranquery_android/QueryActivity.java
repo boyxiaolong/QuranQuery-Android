@@ -44,6 +44,18 @@ public class QueryActivity extends AppCompatActivity {
                 if (suraid != "全部") {
                     querySura = MainActivity.quranData.quranMap.get(suraid);
                     if (querySura != null) {
+                        StringBuilder builder = new StringBuilder();
+                        for (int j = 1; j <= querySura.max_aya_num; ++j) {
+                            String ayaid = "" + j;
+                            AyaObject aya = querySura.suraMap.get(ayaid);
+                            if (aya == null) {
+                                continue;
+                            }
+
+                            builder.append("[" + suraid + ":" + ayaid + "]" + aya.ayaContent + "\n");
+                        }
+                        resStr = builder.toString();
+
                         Spinner aysspinner = (Spinner)findViewById(R.id.ayaspinner);
                         List<String> aya_vec = new ArrayList<String>();
                         aya_vec.add("全部");
@@ -57,10 +69,7 @@ public class QueryActivity extends AppCompatActivity {
                         aysspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                 ayaid = parent.getItemAtPosition(position).toString();
-                                if (querySura == null) {
-
-                                }
-                                else {
+                                if (querySura != null) {
                                     AyaObject aya = querySura.suraMap.get(ayaid);
                                     if (aya != null) {
                                         resStr = "[" + suraid + ":" + aya.ayaID + "]" + aya.ayaContent;
@@ -71,6 +80,30 @@ public class QueryActivity extends AppCompatActivity {
                             }
                         });
                     }
+                }
+                else {
+                    StringBuilder builder = new StringBuilder();
+                    builder.append("");
+
+                    for (int i = 1; i <= MainActivity.quranData.max_sura_num; ++i) {
+                        String suraid = "" + i;
+                        SuraObject value = MainActivity.quranData.quranMap.get(suraid);
+                        if (value == null) {
+                            continue;
+                        }
+
+                        for (int j = 1; j <= value.max_aya_num; ++j) {
+                            String ayaid = "" + j;
+                            AyaObject aya = value.suraMap.get(ayaid);
+                            if (aya == null) {
+                                continue;
+                            }
+
+                            builder.append("[" + suraid + ":" + ayaid + "]" + aya.ayaContent + "\n");
+                        }
+                    }
+
+                    resStr = builder.toString();
                 }
         }
 
