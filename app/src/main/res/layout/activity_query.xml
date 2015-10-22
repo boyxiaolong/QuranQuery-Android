@@ -42,5 +42,18 @@
         android:layout_below="@+id/suraspinner"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查询章节"
+        android:id="@+id/seractbtn"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="270dp"
+        android:layout_marginStart="270dp"
+        android:onClick="onSerachBtnClick"/>
+
 
 </RelativeLayout>

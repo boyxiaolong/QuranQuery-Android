@@ -42,6 +42,12 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
+            res = bundle.getString(QueryActivity.QueryRes);
+            if (res != null) {
+                TextView textView = (TextView)findViewById(R.id.quran_text);
+                textView.setText(res);
+                textView.setMovementMethod(new ScrollingMovementMethod());
+            }
             return;
         }
         InputStream stream = getResources().openRawResource(R.raw.quran);
