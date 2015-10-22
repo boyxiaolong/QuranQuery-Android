@@ -16,7 +16,7 @@ import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
 
-    static private QuranData quranData = new QuranData();
+    static public QuranData quranData = new QuranData();
     static private SuraObject suraObject = null;
     static private  AyaObject ayaObject = new AyaObject();
     static boolean is_init = false;

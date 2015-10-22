@@ -26,4 +26,21 @@
         android:layout_alignParentEnd="true"
         android:onClick="onQueryBtnClick"/>
 
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/suraspinner"
+        android:layout_below="@+id/button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="false"
+        android:spinnerMode="dropdown" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ayaspinner"
+        android:layout_below="@+id/suraspinner"
+        android:layout_centerHorizontal="true" />
+
+
 </RelativeLayout>
