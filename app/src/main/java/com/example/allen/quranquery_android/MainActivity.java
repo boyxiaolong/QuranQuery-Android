@@ -2,11 +2,14 @@ package com.example.allen.quranquery_android;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Xml;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -23,16 +26,32 @@ public class MainActivity extends AppCompatActivity {
     static private  AyaObject ayaObject = new AyaObject();
     static private String allDatas;
     static boolean is_init = false;
-    private Thread thread;
+    private ProgressBar myProgressBar;
 
-    private android.os.Handler handler =  new android.os.Handler() {
-        public void HandleMessage(android.os.Message msg) {
+    private Thread thread = new Thread() {
+        @Override
+        public void run() {
+            InputStream stream = getResources().openRawResource(R.raw.quran);
+            try {
+                parseFile(stream);
+            } catch (IOException| XmlPullParserException e1) {
+                e1.printStackTrace();
+            }
+
+            is_init = true;
+        }
+    };
+
+    private Handler handler =  new Handler() {
+        public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MainActivity.LoadAllDataFinish:
                 {
                     TextView textView = (TextView)findViewById(R.id.quran_text);
                     textView.setMovementMethod(new ScrollingMovementMethod());
                     textView.setText(allDatas);
+
+                    myProgressBar.setVisibility(View.INVISIBLE);
                 }
                 break;
             }
@@ -44,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        myProgressBar = (ProgressBar)findViewById(R.id.progressBar);
 
         if (is_init) {
             Intent intent = getIntent();
@@ -69,20 +90,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return;
         }
-
-        thread = new Thread() {
-            @Override
-            public void run() {
-                InputStream stream = getResources().openRawResource(R.raw.quran);
-                try {
-                    parseFile(stream);
-                } catch (IOException| XmlPullParserException e1) {
-                    e1.printStackTrace();
-                }
-
-                is_init = true;
-            }
-        };
 
         thread.start();
     }
@@ -192,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
 
         allDatas = res.toString();
         Message message = new Message();
-        message.what = 1000;
+        message.what = MainActivity.LoadAllDataFinish;
         boolean msgres = MainActivity.this.handler.sendMessage(message);
 
         return true;
