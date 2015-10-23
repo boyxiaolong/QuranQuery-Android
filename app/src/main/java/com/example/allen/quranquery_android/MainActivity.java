@@ -24,9 +24,12 @@ public class MainActivity extends AppCompatActivity {
     static public QuranData quranData = new QuranData();
     static private SuraObject suraObject = null;
     static private  AyaObject ayaObject = new AyaObject();
-    static private String allDatas;
+    static public String allDatas;
     static boolean is_init = false;
+    static boolean isShowAll = false;
     private ProgressBar myProgressBar;
+    private int curPage = 0;
+    private TextView textView;
 
     private Thread thread = new Thread() {
         @Override
@@ -42,14 +45,42 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private void showNextSura() {
+        ++curPage;
+        if (curPage > quranData.max_sura_num){
+            curPage = 1;
+        }
+
+        String suraStr = "" + curPage;
+        showPage(suraStr);
+    }
+
+    private void showPage(String suraid) {
+        SuraObject value = quranData.quranMap.get(suraid);
+        StringBuilder builder = new StringBuilder();
+
+        if (value != null) {
+            for (int j = 1; j <= value.max_aya_num; ++j) {
+                String ayaid = "" + j;
+                AyaObject aya = value.suraMap.get(ayaid);
+                if (aya == null) {
+                    continue;
+                }
+
+                builder.append("[" + suraid + ":" + ayaid + "]" + aya.ayaContent + "\n");
+            }
+
+            textView.setMovementMethod(new ScrollingMovementMethod());
+
+            textView.setText(builder.toString());
+        }
+    }
     private Handler handler =  new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MainActivity.LoadAllDataFinish:
                 {
-                    TextView textView = (TextView)findViewById(R.id.quran_text);
-                    textView.setMovementMethod(new ScrollingMovementMethod());
-                    textView.setText(allDatas);
+                    showPage("1");
 
                     myProgressBar.setVisibility(View.INVISIBLE);
                 }
@@ -66,7 +97,11 @@ public class MainActivity extends AppCompatActivity {
 
         myProgressBar = (ProgressBar)findViewById(R.id.progressBar);
 
+        textView = (TextView)findViewById(R.id.quran_text);
+
         if (is_init) {
+            myProgressBar.setVisibility(View.INVISIBLE);
+
             Intent intent = getIntent();
             if (intent == null) {
                 return;
@@ -197,7 +232,8 @@ public class MainActivity extends AppCompatActivity {
             stream.close();
         }
 
-        allDatas = res.toString();
+        isShowAll = true;
+
         Message message = new Message();
         message.what = MainActivity.LoadAllDataFinish;
         boolean msgres = MainActivity.this.handler.sendMessage(message);
@@ -213,18 +249,19 @@ public class MainActivity extends AppCompatActivity {
         switch (event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
-                x1 = event.getY();
+                x1 = event.getX();
                 break;
             case MotionEvent.ACTION_UP:
-                x2 = event.getY();
-                float delta = x2 - x1;
-                if (Math.abs(delta) < Min_Distance)
+                x2 = event.getX();
+                if (x2 - x1 > Min_Distance)
                 {
-                    //Toast.makeText(this, "left2right swipe", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent();
                     intent.setClass(this, QueryActivity.class);
                     startActivity(intent);
-                    finish();
+                }
+                else if (x1 - x2 > Min_Distance)
+                {
+                    showNextSura();
                 }
                 break;
         }

@@ -32,7 +32,7 @@ public class QueryActivity extends AppCompatActivity {
             sura_vec.add("" + i);
         }
 
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item
         , sura_vec);
 
         suraspinner.setAdapter(spinnerAdapter);
@@ -63,7 +63,7 @@ public class QueryActivity extends AppCompatActivity {
                             aya_vec.add("" + i);
                         }
 
-                        ArrayAdapter<String> tmpAdapter = new ArrayAdapter<String>(QueryActivity.this, android.R.layout.simple_spinner_item
+                        ArrayAdapter<String> tmpAdapter = new ArrayAdapter<String>(QueryActivity.this, android.R.layout.simple_spinner_dropdown_item
                                 , aya_vec);
                         aysspinner.setAdapter(tmpAdapter);
                         aysspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -82,28 +82,7 @@ public class QueryActivity extends AppCompatActivity {
                     }
                 }
                 else {
-                    StringBuilder builder = new StringBuilder();
-                    builder.append("");
-
-                    for (int i = 1; i <= MainActivity.quranData.max_sura_num; ++i) {
-                        String suraid = "" + i;
-                        SuraObject value = MainActivity.quranData.quranMap.get(suraid);
-                        if (value == null) {
-                            continue;
-                        }
-
-                        for (int j = 1; j <= value.max_aya_num; ++j) {
-                            String ayaid = "" + j;
-                            AyaObject aya = value.suraMap.get(ayaid);
-                            if (aya == null) {
-                                continue;
-                            }
-
-                            builder.append("[" + suraid + ":" + ayaid + "]" + aya.ayaContent + "\n");
-                        }
-                    }
-
-                    resStr = builder.toString();
+                    resStr = MainActivity.allDatas;
                 }
         }
 

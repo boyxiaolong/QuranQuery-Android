@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">古兰经查询</string>
+    <string name="spinner1">选择章</string>
+    <string name="spinner2">选择节</string>
 </resources>
