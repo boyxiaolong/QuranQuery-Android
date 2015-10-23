@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         showPage(suraStr);
     }
 
-    private void showPage(String suraid) {
+    public void showPage(String suraid) {
         SuraObject value = quranData.quranMap.get(suraid);
         StringBuilder builder = new StringBuilder();
 
@@ -125,6 +125,12 @@ public class MainActivity extends AppCompatActivity {
 
             final String QueryRes = bundle.getString(QueryActivity.QueryRes);
             if (QueryRes != null) {
+                if (QueryRes.equals(QueryActivity.fullDatas)) {
+                    curPage = 1;
+                    showPage("1");
+                    return;
+                }
+
                 textView.setText(QueryRes);
                 textView.setMovementMethod(new ScrollingMovementMethod());
                 return;

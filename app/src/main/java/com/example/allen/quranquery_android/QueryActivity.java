@@ -17,6 +17,7 @@ public class QueryActivity extends AppCompatActivity {
     static  public String QueryRes = "QueryRes";
     private String suraid = new String("全部");
     private String ayaid = new String("全部");
+    static public String fullDatas = "fullDatas";
     protected SuraObject querySura = null;
     private String resStr = null;
 
@@ -82,7 +83,7 @@ public class QueryActivity extends AppCompatActivity {
                     }
                 }
                 else {
-                    resStr = MainActivity.allDatas;
+                    resStr = fullDatas;
                 }
         }
 
