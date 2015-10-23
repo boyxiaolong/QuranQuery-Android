@@ -2,6 +2,7 @@ package com.example.allen.quranquery_android;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Xml;
@@ -15,11 +16,29 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
+    static final int LoadAllDataFinish = 1000;
 
     static public QuranData quranData = new QuranData();
     static private SuraObject suraObject = null;
     static private  AyaObject ayaObject = new AyaObject();
+    static private String allDatas;
     static boolean is_init = false;
+    private Thread thread;
+
+    private android.os.Handler handler =  new android.os.Handler() {
+        public void HandleMessage(android.os.Message msg) {
+            switch (msg.what) {
+                case MainActivity.LoadAllDataFinish:
+                {
+                    TextView textView = (TextView)findViewById(R.id.quran_text);
+                    textView.setMovementMethod(new ScrollingMovementMethod());
+                    textView.setText(allDatas);
+                }
+                break;
+            }
+            super.handleMessage(msg);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +69,22 @@ public class MainActivity extends AppCompatActivity {
             }
             return;
         }
-        InputStream stream = getResources().openRawResource(R.raw.quran);
 
-        try {
-            parseFile(stream);
-        } catch (IOException| XmlPullParserException e1) {
-            e1.printStackTrace();
-        }
+        thread = new Thread() {
+            @Override
+            public void run() {
+                InputStream stream = getResources().openRawResource(R.raw.quran);
+                try {
+                    parseFile(stream);
+                } catch (IOException| XmlPullParserException e1) {
+                    e1.printStackTrace();
+                }
 
-        is_init = true;
+                is_init = true;
+            }
+        };
+
+        thread.start();
     }
 
     private void searchCb(String res) {
@@ -99,8 +125,6 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
 
-        TextView textView = (TextView)findViewById(R.id.quran_text);
-        textView.setMovementMethod(new ScrollingMovementMethod());
         StringBuilder res = new StringBuilder();
 
         try {
@@ -166,7 +190,10 @@ public class MainActivity extends AppCompatActivity {
             stream.close();
         }
 
-        textView.setText(res.toString());
+        allDatas = res.toString();
+        Message message = new Message();
+        message.what = 1000;
+        boolean msgres = MainActivity.this.handler.sendMessage(message);
 
         return true;
     }
