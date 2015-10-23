@@ -20,6 +20,8 @@ import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
     static final int LoadAllDataFinish = 1000;
+    static final int SearchFinish = 1001;
+    static final String serachResKey = "serachResKey";
 
     static public QuranData quranData = new QuranData();
     static private SuraObject suraObject = null;
@@ -80,9 +82,18 @@ public class MainActivity extends AppCompatActivity {
             switch (msg.what) {
                 case MainActivity.LoadAllDataFinish:
                 {
+                    curPage = 1;
                     showPage("1");
 
                     myProgressBar.setVisibility(View.INVISIBLE);
+                }
+                break;
+                case MainActivity.SearchFinish:
+                {
+                    myProgressBar.setVisibility(View.INVISIBLE);
+                    String res = (String)msg.getData().get(MainActivity.serachResKey);
+                    textView.setText(res);
+                    textView.setMovementMethod(new ScrollingMovementMethod());
                 }
                 break;
             }
@@ -111,18 +122,24 @@ public class MainActivity extends AppCompatActivity {
             if (bundle == null) {
                 return;
             }
-            String res = bundle.getString(QueryActivity.KeyWord_Str);
-            if (res != null) {
-                searchCb(res);
+
+            final String QueryRes = bundle.getString(QueryActivity.QueryRes);
+            if (QueryRes != null) {
+                textView.setText(QueryRes);
+                textView.setMovementMethod(new ScrollingMovementMethod());
                 return;
             }
-
-            res = bundle.getString(QueryActivity.QueryRes);
-            if (res != null) {
-                TextView textView = (TextView)findViewById(R.id.quran_text);
-                textView.setText(res);
-                textView.setMovementMethod(new ScrollingMovementMethod());
+            final String res = bundle.getString(QueryActivity.KeyWord_Str);
+            if (res != null && res.length() > 0) {
+                myProgressBar.setVisibility(View.VISIBLE);
+                Thread searchThread = new Thread(){
+                    public void run(){
+                        searchCb(res);
+                    }
+                };
+                searchThread.start();
             }
+
             return;
         }
 
@@ -133,9 +150,12 @@ public class MainActivity extends AppCompatActivity {
         StringBuilder builder = new StringBuilder();
         serachKeyWords(res, builder);
 
-        TextView textView = (TextView)findViewById(R.id.quran_text);
-        textView.setText(builder.toString());
-        textView.setMovementMethod(new ScrollingMovementMethod());
+        Message msg = new Message();
+        Bundle bundle = new Bundle();
+        bundle.putString(serachResKey, builder.toString());
+        msg.setData(bundle);
+        msg.what = SearchFinish;
+        MainActivity.this.handler.sendMessage(msg);
     }
 
     static public void serachKeyWords(String res, StringBuilder builder) {
