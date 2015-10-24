@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
@@ -91,18 +90,6 @@ public class QueryActivity extends AppCompatActivity {
 
             }
     });
-    }
-    public void onQueryBtnClick(View view) {
-        EditText textView = (EditText)findViewById(R.id.keywordtextView);
-        if (textView.getText().length() > 0) {
-            Intent intent = new Intent();
-            intent.setClass(this, MainActivity.class);
-
-            Bundle bundle = new Bundle();
-            bundle.putString(QueryActivity.KeyWord_Str, textView.getText().toString());
-            intent.putExtras(bundle);
-            startActivity(intent);
-        }
     }
 
     public void onSerachBtnClick(View view) {

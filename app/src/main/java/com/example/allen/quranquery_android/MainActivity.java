@@ -1,5 +1,6 @@
 package com.example.allen.quranquery_android;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,7 +10,9 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Xml;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
+import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -32,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar myProgressBar;
     private int curPage = 0;
     private TextView textView;
+    android.widget.SearchView searchView;
 
     private Thread thread = new Thread() {
         @Override
@@ -101,6 +105,20 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private void hideSoftInput() {
+        InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputMethodManager != null) {
+            View v = MainActivity.this.getCurrentFocus();
+            if (v == null) {
+                return;
+            }
+
+            inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+            searchView.clearFocus();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +127,40 @@ public class MainActivity extends AppCompatActivity {
         myProgressBar = (ProgressBar)findViewById(R.id.progressBar);
 
         textView = (TextView)findViewById(R.id.quran_text);
+        searchView = (android.widget.SearchView)findViewById(R.id.searchView);
+
+        searchView.setOnCloseListener(new android.widget.SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                // to avoid click x button and the edittext hidden
+                return true;
+            }
+        });
+
+        searchView.setOnQueryTextListener(new OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String str) {
+                //Toast.makeText(MainActivity.this, str, Toast.LENGTH_SHORT).show();
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(final String newText) {
+                if (newText != null && newText.length() > 0) {
+                    myProgressBar.setVisibility(View.VISIBLE);
+                    Thread searchThread = new Thread(){
+                        public void run(){
+                            searchCb(newText);
+                        }
+                    };
+                    searchThread.start();
+                    hideSoftInput();
+                }
+                return true;
+            }
+
+        });
 
         if (is_init) {
             myProgressBar.setVisibility(View.INVISIBLE);
