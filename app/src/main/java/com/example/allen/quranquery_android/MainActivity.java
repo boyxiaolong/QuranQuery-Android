@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
             inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
             searchView.clearFocus();
+            searchView.setVisibility(View.INVISIBLE);
         }
     }
 
