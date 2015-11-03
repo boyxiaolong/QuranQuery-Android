@@ -82,27 +82,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private Handler handler =  new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MainActivity.LoadAllDataFinish:
-                {
-                    curPage = 1;
-                    showPage("1");
 
-                    myProgressBar.setVisibility(View.INVISIBLE);
-                }
-                break;
-                case MainActivity.SearchFinish:
-                {
-                    myProgressBar.setVisibility(View.INVISIBLE);
-                    String res = (String)msg.getData().get(MainActivity.serachResKey);
-                    textView.setText(res);
-                    textView.setMovementMethod(new ScrollingMovementMethod());
-                }
-                break;
-            }
-            super.handleMessage(msg);
-        }
     };
 
     private void hideSoftInput() {

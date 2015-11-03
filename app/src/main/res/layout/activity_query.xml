@@ -7,40 +7,11 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.example.allen.quranquery_android.QueryActivity">
 
-    <Spinner
-        android:layout_width="match_parent"
+
+    <ExpandableListView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/suraspinner"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:spinnerMode="dropdown"
-        android:prompt="@string/spinner1"
-        android:minWidth="200dp"
-        android:padding="0dip"/>
-
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/ayaspinner"
-        android:spinnerMode="dropdown"
-        android:prompt="@string/spinner2"
-        android:layout_below="@+id/suraspinner"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:minWidth="200dp"
-        android:padding="0dip"/>
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="查询章节"
-        android:id="@+id/seractbtn"
-        android:onClick="onSerachBtnClick"
-        android:layout_below="@+id/suraspinner"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="112dp" />
-
-
+        android:id="@+id/expandableListView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
